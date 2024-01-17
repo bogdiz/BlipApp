@@ -1,0 +1,72 @@
+﻿@{
+    TimeSpan timeDifference = DateTime.UtcNow - Model.Date;
+
+
+    int hoursAgo = (int)timeDifference.TotalHours;
+    int daysAgo = (int)timeDifference.TotalDays;
+
+    string timeAgoText = string.Empty;
+
+    if (daysAgo > 0)
+    {
+        timeAgoText = daysAgo == 1 ? "1 day ago" : $"{daysAgo} days ago";
+    }
+    else if (hoursAgo > 0)
+    {
+        timeAgoText = hoursAgo == 1 ? "1 hour ago" : $"{hoursAgo} hours ago";
+    }
+    else
+    {
+        timeAgoText = "just now";
+    }
+
+}
+
+
+<div class="card border-0">
+    <div class="card-body pt-1">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="card" onclick="handleCardClick(event, '/ApplicationUsers/Show/@Model.User.Id')" style="cursor:pointer">
+                <h6 class="card-title mb-0"><i class="bi bi-person"></i> @Model.User.UserName</h6>
+            </div>
+            <span class="text-muted">@timeAgoText</span>
+        </div>
+        <p class="card-text mb-5">@Model.Content</p>
+
+        <div class="container text-left">
+            <div class="row mb-3">
+                <div class="col">
+                    @if (!string.IsNullOrEmpty(Model.Image))
+                    {
+                        <img src="@Url.Content(Model.Image)" alt="Uploaded Image" class="img-fluid" style="width: 30vw; height: auto" />
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    @if (!string.IsNullOrEmpty(Model.Video))
+                    {
+                        <video controls muted width="500" height="auto">
+                            <source src="@Url.Content(Model.Video)" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+
+
+
+
+
+    </div>
+    <div class="card-footer bg-white d-flex justify-content-between align-items-center border-top-0">
+        <div>
+            <button type="button" class="border-0" style="background-color: white" onclick="likePost(event, @Model.Id)">
+                <i class="bi bi-lightning-charge-fill" id="lightning_@Model.Id" style="font-size: 1.56em;"></i><span Id="likeCount_@Model.Id" class="text-muted small">@Model.Likes likes</span>
+            </button>
+        </div>
+    </div>
+</div>

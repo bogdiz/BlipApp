@@ -1,0 +1,31 @@
+﻿@model BlipApp.Models.ApplicationUser
+
+
+<form method="post" action="/ApplicationUsers/Edit/@Model.Id" enctype="multipart/form-data">
+    <div class="mb-3">
+        <input type="file" class="custom-file-input" id="PostImage" name="PostImage" hidden />
+        <label class="custom-file-label" for="PostImage">
+            @* <i class="bi bi-image" style="cursor: pointer; font-size: 1.63em;"></i> *@
+            <div style="width: 75px; height: 75px; overflow:hidden; border-radius: 50%">
+                <img src="@Url.Content(Model.ProfileImage)" alt="Upload Image" style="cursor:pointer;"class="img-fluid rounded w-100 h-100" />
+            </div>
+        </label>
+
+        <br />
+        <br />
+        @Html.Label("UserName", "Name: ", new { @class = "h6"})
+        @Html.TextBox("UserName", null, new { @class = "form-control border-0", style = "height: 40px;" })
+        @Html.ValidationMessage("UserName", null, new { @class = "text-danger" })
+        <br />
+        <div class="form-check form-switch">
+            <label class="form-check-label" id="switchLabel" >Private account</label>
+            @Html.CheckBox("ProfileVisibility", null, new { onchange ="updateProfileVisibility()", @class = "form-check-input", id = "switchLabel" })
+            @Html.ValidationMessage("ProfileVisibility", null, new { @class = "text-danger" })
+
+        </div>
+
+        <br />
+        <input class="btn btn-secondary rounded-pill" type="submit" value="Save" />
+
+    </div>
+</form>

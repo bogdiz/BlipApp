@@ -1,0 +1,99 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore;
+@using Microsoft.AspNetCore.Mvc;
+@using BlipApp.Data;
+
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext db
+@inject ApplicationDbContext context
+
+
+@model BlipApp.Models.ApplicationUser
+
+
+@{
+    //var follower = new Follower { Id = UserManager.GetUserId(User) };
+    var userFollower = new UserFollower { UserId = Model.Id, FollowerId = UserManager.GetUserId(User) };
+}
+
+<div class="row">
+    <div class="col-md-3">
+
+        <div >
+            @if (!string.IsNullOrEmpty(Model.ProfileImage)){
+                <div class="mb-5" style="width: 75px; height: 75px; overflow:hidden; border-radius: 50%" >
+                    <img src="@Url.Content(Model.ProfileImage)" alt="Upload Image"  class="img-fluid rounded w-100 h-100"/>
+
+                </div>
+            }
+        </div>
+        <div class="card" onclick="handleCardClick(event, '/ApplicationUsers/Show/@Model.Id')" style="cursor:pointer">
+            <h6 class="card-title mb-0"><i class="bi bi-person"></i> @Model.UserName</h6>
+        </div>
+        <br/>
+        @if (Model.Id == ViewBag.UserCurent || ViewBag.EsteAdmin)
+        {
+            <div class="submit">
+                <a type="button" href="/ApplicationUsers/Edit/@Model.Id" class="btn btn-secondary w-50">Edit</a>
+        </div>
+        }
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+
+            <div class="col-md-4">
+                
+                    <p>Blips: @Model.Posts.Count()</p>
+                
+            </div>
+            <div class="col-md-4">
+                <p>Followers: @Model.FollowersCount</p>
+            </div>
+            <div class="col-md-4">
+                <p>Following: @Model.FollowedByCount</p>
+
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Id == ViewBag.UserCurent || ViewBag.EsteAdmin)
+    {
+        <div class="col-md-3">
+
+        <a type="button" href="/Identity/Account/Manage/Email" class ="btn btn-secondary">Settings</a>
+
+        </div>
+    }
+    else
+    {
+        @if (db.UserFollowers?.FirstOrDefault(uf => uf.FollowerId == userFollower.FollowerId && uf.UserId == userFollower.UserId) == null)
+        {
+            
+            <div class="col-md-3">
+                <form method="post" asp-controller="ApplicationUsers" asp-action="EditFollower">
+                    <input type="hidden" name="UserId" value="@userFollower.UserId" />
+                    <input type="hidden" name="FollowerId" value="@userFollower.FollowerId" />
+
+                    <input class="btn btn-primary" type="submit" value="Follow" >
+                </form>
+            </div>
+
+        }
+        else
+        {
+            <div class="col-md-3">
+                <form method="post" asp-controller="ApplicationUsers" asp-action="RemoveFollower">
+                    <input type="hidden" name="UserId" value="@userFollower.UserId" />
+                    <input type="hidden" name="FollowerId" value="@userFollower.FollowerId" />
+
+                    <input class="btn btn-primary" type="submit" value="Unfollow">
+                </form>
+            </div>
+        }
+
+    }
+</div>
+<br />

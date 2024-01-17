@@ -1,0 +1,18 @@
+﻿@model BlipApp.Models.Group
+<br />
+<h2 class="mb-5 text-center">Edit your group</h2>
+<br />
+
+@using (Html.BeginForm(actionName: "Edit", controllerName: "Groups", method: FormMethod.Post, new { id = Model.Id }))
+{
+
+    @Html.Label("Title", "New group name:")
+    <br />
+    @Html.TextBox("Title", null, new { @class = "form-control" })
+
+    @Html.ValidationMessageFor(m => m.Title, null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    <button class="btn btn-secondary" type="submit">Edit group</button>
+}

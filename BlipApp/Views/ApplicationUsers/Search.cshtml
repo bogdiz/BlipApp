@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore;
+@using Microsoft.AspNetCore.Mvc;
+@using BlipApp.Data;
+
+
+
+
+
+
+    @foreach (BlipApp.Models.ApplicationUser user in Model)
+    {
+        <div class="card">
+
+            @Html.Partial("UserInfo", user)
+
+        </div>
+        <br/>
+    }

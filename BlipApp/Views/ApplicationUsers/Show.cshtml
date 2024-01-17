@@ -1,0 +1,67 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.EntityFrameworkCore;
+@using Microsoft.AspNetCore.Mvc;
+@using BlipApp.Data;
+
+@inject UserManager<ApplicationUser> UserManager
+@inject ApplicationDbContext db
+@inject ApplicationDbContext context
+
+@{
+    
+    string userId = UserManager.GetUserId(User);
+    db = context;
+    ApplicationUser user = db.ApplicationUsers.Find(Model.Id);
+}
+
+@model BlipApp.Models.ApplicationUser
+@{
+
+    //var follower = new Follower { Id = UserManager.GetUserId(User)};
+    var userFollower = new UserFollower { UserId = Model.Id, FollowerId = UserManager.GetUserId(User) };
+}
+<br />
+
+<div class="card">
+
+    @Html.Partial("UserInfo", Model)
+
+
+</div>
+
+@if (Model.Posts.Count() == 0)
+{
+    <div class="d-flex align-items-center justify-content-center" style="height: 100vh;">
+        <span class="text-secondary" style="margin-top: -400px;">No blips yet...</span>
+    </div>
+}
+
+@if (Model.Id == ViewBag.UserCurent || ViewBag.EsteAdmin || Model.ProfileVisibility == false || Model.Id == UserManager.GetUserId(User) || (Model.ProfileVisibility == true && db.UserFollowers?.FirstOrDefault(uf => uf.FollowerId == userId && uf.UserId == user.Id) != null))
+{
+    <div class="container mt-3">
+        <div class="row justify-content-center">
+
+            @foreach (BlipApp.Models.Post post in Model.Posts)
+            { 
+                @if (post.UserId == Model.Id)
+                {
+                    <div class="mb-4">
+                        <div class="card" onclick="window.location.href='/Posts/Show/@post.Id'" style="cursor:pointer">
+                            @Html.Partial("PostInfo", post)
+
+                            <div class="position-absolute bottom-0 end-0 mt-2">
+                                <a class="btn btn-secondary border-0" href="/Posts/Edit/@post.Id">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+           
+        </div>
+        <br />
+    </div>
+}
